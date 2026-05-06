@@ -7,13 +7,20 @@ REPO_URL="https://github.com/ankun-eric/local_xiaobai_test.git"
 
 echo "=== 个人任务管理系统 部署脚本 ==="
 
+if [ -n "$GIT_TOKEN" ] && [ -n "$GIT_USER" ]; then
+    AUTH_URL="https://${GIT_USER}:${GIT_TOKEN}@github.com/ankun-eric/local_xiaobai_test.git"
+else
+    AUTH_URL="$REPO_URL"
+fi
+
 if [ -d "$PROJECT_DIR" ]; then
     echo "项目目录已存在，更新代码..."
     cd "$PROJECT_DIR"
-    git pull origin main || true
+    git remote set-url origin "$AUTH_URL"
+    git pull origin master || true
 else
     echo "克隆项目..."
-    git clone "$REPO_URL" "$PROJECT_DIR"
+    git clone "$AUTH_URL" "$PROJECT_DIR"
     cd "$PROJECT_DIR"
 fi
 
