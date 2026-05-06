@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: a46094c5-4cff-434b-a815-3e73fc6d39a6-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass123
+      MYSQL_DATABASE: taskdb
+      MYSQL_USER: taskuser
+      MYSQL_PASSWORD: taskpass123
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - a46094c5-4cff-434b-a815-3e73fc6d39a6-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: ./backend
+    container_name: a46094c5-4cff-434b-a815-3e73fc6d39a6-backend
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_PORT: "3306"
+      MYSQL_USER: taskuser
+      MYSQL_PASSWORD: taskpass123
+      MYSQL_DATABASE: taskdb
+    ports:
+      - "8000:8000"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - a46094c5-4cff-434b-a815-3e73fc6d39a6-network
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    container_name: a46094c5-4cff-434b-a815-3e73fc6d39a6-frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - a46094c5-4cff-434b-a815-3e73fc6d39a6-network
+    restart: unless-stopped
+
+volumes:
+  mysql_data:
+
+networks:
+  a46094c5-4cff-434b-a815-3e73fc6d39a6-network:
+    driver: bridge
