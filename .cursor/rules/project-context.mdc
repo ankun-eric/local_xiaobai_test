@@ -1,0 +1,115 @@
+---
+description: 本仓库（noob_test）的目录与关键文件索引，供 Agent 快速定位。
+alwaysApply: false
+---
+
+# 项目上下文：超级大牛逼的任务管理系统
+
+基于 Next.js + FastAPI + MySQL 的个人任务管理系统，支持任务的增删改查、筛选排序和分类管理。
+
+## 目录结构
+
+```
+noob_test/
+├── frontend/                    # Web 前端 - Next.js Pages Router + TypeScript
+│   ├── pages/                   # 页面路由
+│   │   ├── index.tsx            # 仪表盘主页 - 任务列表与统计
+│   │   ├── tasks/               # 任务相关页面
+│   │   │   ├── create.tsx        # 创建任务页
+│   │   │   ├── [id].tsx          # 任务详情页
+│   │   │   └── [id]/edit.tsx     # 编辑任务页
+│   │   └── _app.tsx              # App 入口组件
+│   ├── lib/api.ts               # API 客户端封装 (axios)
+│   ├── styles/globals.css       # 全局样式
+│   ├── next.config.js           # Next.js 配置 (basePath, assetPrefix)
+│   ├── Dockerfile               # 前端 Docker 镜像
+│   └── package.json             # 前端依赖
+├── backend/                     # 后端服务 - Python FastAPI
+│   ├── app/                     # 应用代码
+│   │   ├── main.py              # FastAPI 入口
+│   │   ├── models.py            # SQLAlchemy ORM 模型
+│   │   ├── schemas.py           # Pydantic Schema
+│   │   ├── database.py          # 数据库连接配置
+│   │   └── routers/tasks.py     # 任务 CRUD API 路由
+│   ├── tests/test_api.py        # API 自动化测试
+│   ├── Dockerfile               # 后端 Docker 镜像
+│   └── requirements.txt         # Python 依赖
+├── docker-compose.yml           # Docker Compose 部署配置
+├── nginx-gateway.conf           # Gateway Nginx 路由配置
+├── init.sql                     # 数据库初始化脚本
+├── deploy/                      # 部署相关配置
+│   └── deploy_msg.txt           # 服务器连接信息
+└── user_docs/                   # 用户手册文档
+```
+
+## 子系统说明
+
+| 子系统 | 技术栈 | 说明 |
+|--------|--------|------|
+| Web 前端 | Next.js 14 (Pages Router) + TypeScript + React 18 | 任务管理界面，纯 SSR/SSG 页面 |
+| 后端 API | Python 3.11 + FastAPI + SQLAlchemy 2 | RESTful API，任务 CRUD + 统计 |
+| 数据库 | MySQL 8.0 | 任务数据持久化存储 |
+| 反向代理 | Nginx (gateway-nginx) | 统一入口，按路径路由到各项目容器 |
+
+## 数据模型
+
+### Task（任务表）
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| id | Integer (PK) | 自增主键 |
+| title | String(200) | 任务标题 |
+| description | Text (可空) | 任务描述 |
+| priority | Enum(critical/high/medium/low) | 优先级 |
+| status | Enum(todo/in_progress/review/done) | 状态 |
+| category | Enum(work/personal/study/health/finance) | 分类 |
+| due_date | DateTime (可空) | 截止日期 |
+| estimated_hours | Float (可空) | 预计耗时 |
+| progress | Integer (0-100) | 进度百分比 |
+| tags | JSON | 标签列表 |
+| created_at | DateTime | 创建时间 |
+| updated_at | DateTime | 更新时间 |
+
+## API 路由
+
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| GET | /api/tasks | 获取任务列表（分页+筛选+排序） |
+| POST | /api/tasks | 创建任务 |
+| GET | /api/tasks/{id} | 获取任务详情 |
+| PUT | /api/tasks/{id} | 更新任务 |
+| DELETE | /api/tasks/{id} | 删除任务 |
+| GET | /api/tasks/stats | 获取任务统计 |
+| GET | /api/health | 健康检查 |
+
+## 前端页面与组件
+
+| 页面路由 | 文件 | 说明 |
+|----------|------|------|
+| / | frontend/pages/index.tsx | 仪表盘 - 统计卡片、筛选栏、任务表格 |
+| /tasks/create | frontend/pages/tasks/create.tsx | 创建新任务表单 |
+| /tasks/[id] | frontend/pages/tasks/[id].tsx | 任务详情查看 |
+| /tasks/[id]/edit | frontend/pages/tasks/[id]/edit.tsx | 编辑任务表单 |
+
+## 配置信息
+
+| 配置项 | 位置 | 说明 |
+|--------|------|------|
+| 前端 basePath | next.config.js | `/autodev/a46094c5-4cff-434b-a815-3e73fc6d39a6` |
+| 后端地址 | 环境变量 | `MYSQL_HOST`, `MYSQL_USER`, `MYSQL_PASSWORD`, `MYSQL_DATABASE` |
+| Docker 网络 | docker-compose.yml | `a46094c5-4cff-434b-a815-3e73fc6d39a6-network` |
+| 部署标识 (DEPLOY_ID) | docker-compose.yml | `a46094c5-4cff-434b-a815-3e73fc6d39a6` |
+
+## 关键文件索引
+
+| 文件 | 用途 |
+|------|------|
+| frontend/pages/index.tsx | 仪表盘主页面 |
+| frontend/lib/api.ts | 前端 API 调用封装 |
+| frontend/next.config.js | Next.js 构建配置 |
+| backend/app/main.py | FastAPI 应用入口与路由注册 |
+| backend/app/models.py | 数据库 ORM 模型定义 |
+| backend/app/schemas.py | API 请求/响应 Schema |
+| backend/app/routers/tasks.py | 任务 CRUD 路由 |
+| docker-compose.yml | Docker 容器编排配置 |
+| nginx-gateway.conf | Gateway Nginx 路由规则 |
