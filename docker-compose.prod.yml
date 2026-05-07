@@ -1,0 +1,87 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: a46094c5-4cff-434b-a815-3e73fc6d39a6-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass123
+      MYSQL_DATABASE: taskdb
+      MYSQL_USER: taskuser
+      MYSQL_PASSWORD: taskpass123
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    expose:
+      - "3306"
+    networks:
+      app-network:
+        aliases:
+          - a46094c5-4cff-434b-a815-3e73fc6d39a6-mysql
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      args:
+        BUILD_COMMIT: "${BUILD_COMMIT:-unknown}"
+    container_name: a46094c5-4cff-434b-a815-3e73fc6d39a6-backend
+    environment:
+      MYSQL_HOST: a46094c5-4cff-434b-a815-3e73fc6d39a6-mysql
+      MYSQL_PORT: "3306"
+      MYSQL_USER: taskuser
+      MYSQL_PASSWORD: taskpass123
+      MYSQL_DATABASE: taskdb
+    env_file:
+      - .env.production
+    expose:
+      - "8000"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      app-network:
+        aliases:
+          - a46094c5-4cff-434b-a815-3e73fc6d39a6-backend
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8000/api/health || curl -sf http://localhost:8000/api/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        BUILD_COMMIT: "${BUILD_COMMIT:-unknown}"
+    container_name: a46094c5-4cff-434b-a815-3e73fc6d39a6-frontend
+    expose:
+      - "3000"
+    depends_on:
+      - backend
+    networks:
+      app-network:
+        aliases:
+          - a46094c5-4cff-434b-a815-3e73fc6d39a6-frontend
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:3000/autodev/a46094c5-4cff-434b-a815-3e73fc6d39a6 || curl -sf http://localhost:3000/autodev/a46094c5-4cff-434b-a815-3e73fc6d39a6 || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+volumes:
+  mysql_data:
+
+networks:
+  app-network:
+    name: a46094c5-4cff-434b-a815-3e73fc6d39a6-network
+    driver: bridge

@@ -85,12 +85,12 @@ export default function Dashboard() {
   return (
     <>
       <Head>
-        <title>使劲吹牛逼的系统 - 仪表盘</title>
+        <title>一点都很吹牛逼的管理系统 - 仪表盘</title>
       </Head>
 
       <header className="header">
         <div className="container header-content">
-          <span className="logo">使劲吹牛逼的系统</span>
+          <span className="logo">一点都很吹牛逼的管理系统</span>
           <Link href="/tasks/create" className="btn btn-primary">
             + 创建任务
           </Link>

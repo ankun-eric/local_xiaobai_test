@@ -130,10 +130,10 @@ export default function EditTask() {
   if (loading) {
     return (
       <>
-        <Head><title>加载中... - 使劲吹牛逼的系统</title></Head>
+        <Head><title>加载中... - 一点都很吹牛逼的管理系统</title></Head>
         <header className="header">
           <div className="container header-content">
-            <span className="logo">使劲吹牛逼的系统</span>
+            <span className="logo">一点都很吹牛逼的管理系统</span>
             <Link href="/" className="btn btn-secondary">返回列表</Link>
           </div>
         </header>
@@ -145,10 +145,10 @@ export default function EditTask() {
   if (notFound) {
     return (
       <>
-        <Head><title>任务不存在 - 使劲吹牛逼的系统</title></Head>
+        <Head><title>任务不存在 - 一点都很吹牛逼的管理系统</title></Head>
         <header className="header">
           <div className="container header-content">
-            <span className="logo">使劲吹牛逼的系统</span>
+            <span className="logo">一点都很吹牛逼的管理系统</span>
             <Link href="/" className="btn btn-secondary">返回列表</Link>
           </div>
         </header>
@@ -165,12 +165,12 @@ export default function EditTask() {
   return (
     <>
       <Head>
-        <title>编辑任务 - 使劲吹牛逼的系统</title>
+        <title>编辑任务 - 一点都很吹牛逼的管理系统</title>
       </Head>
 
       <header className="header">
         <div className="container header-content">
-          <span className="logo">使劲吹牛逼的系统</span>
+          <span className="logo">一点都很吹牛逼的管理系统</span>
           <Link href="/" className="btn btn-secondary">返回列表</Link>
         </div>
       </header>

@@ -3,7 +3,7 @@ description: 本仓库（noob_test）的目录与关键文件索引，供 Agent 
 alwaysApply: false
 ---
 
-# 项目上下文：使劲吹牛逼的系统
+# 项目上下文：一点都很吹牛逼的管理系统
 
 基于 Next.js + FastAPI + MySQL 的个人任务管理系统，支持任务的增删改查、筛选排序和分类管理。
 
@@ -34,13 +34,16 @@ noob_test/
 │   ├── tests/test_api.py        # API 自动化测试
 │   ├── Dockerfile               # 后端 Docker 镜像
 │   └── requirements.txt         # Python 依赖
-├── docker-compose.yml           # Docker Compose 部署配置
-├── nginx-gateway.conf           # Gateway Nginx 路由配置
+├── docker-compose.yml           # Docker Compose 开发配置
+├── docker-compose.prod.yml      # Docker Compose 生产配置（expose, healthcheck）
+├── gateway-routes.conf          # Gateway Nginx 路由配置片段（Docker DNS）
+├── nginx-gateway.conf           # Gateway Nginx 路由配置（本地开发）
+├── .env.production              # 生产环境变量
 ├── init.sql                     # 数据库初始化脚本
 ├── deploy/                      # 部署相关配置
 │   └── deploy_msg.txt           # 服务器连接信息
 ├── user_docs/                   # 用户手册文档
-│   └── 页面标题更新.md           # 页面标题更新使用手册
+│   └── manual_20260507_185422_2001.md  # 页面标题更新使用手册
 ```
 
 ## 子系统说明
@@ -112,5 +115,8 @@ noob_test/
 | backend/app/models.py | 数据库 ORM 模型定义 |
 | backend/app/schemas.py | API 请求/响应 Schema |
 | backend/app/routers/tasks.py | 任务 CRUD 路由 |
-| docker-compose.yml | Docker 容器编排配置 |
-| nginx-gateway.conf | Gateway Nginx 路由规则 |
+| docker-compose.yml | Docker 容器编排配置（开发用） |
+| docker-compose.prod.yml | Docker 容器编排配置（生产用，expose + healthcheck） |
+| gateway-routes.conf | Gateway Nginx 路由配置片段（Docker DNS 解析） |
+| nginx-gateway.conf | Gateway Nginx 路由规则（本地开发） |
+| .env.production | 生产环境变量配置 |
