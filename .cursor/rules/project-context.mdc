@@ -3,7 +3,7 @@ description: 本仓库（noob_test）的目录与关键文件索引，供 Agent 
 alwaysApply: false
 ---
 
-# 项目上下文：超级大牛逼的任务管理系统
+# 项目上下文：使劲吹牛逼的系统
 
 基于 Next.js + FastAPI + MySQL 的个人任务管理系统，支持任务的增删改查、筛选排序和分类管理。
 
@@ -39,7 +39,8 @@ noob_test/
 ├── init.sql                     # 数据库初始化脚本
 ├── deploy/                      # 部署相关配置
 │   └── deploy_msg.txt           # 服务器连接信息
-└── user_docs/                   # 用户手册文档
+├── user_docs/                   # 用户手册文档
+│   └── 页面标题更新.md           # 页面标题更新使用手册
 ```
 
 ## 子系统说明
