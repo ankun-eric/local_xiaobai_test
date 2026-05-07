@@ -97,12 +97,12 @@ export default function CreateTask() {
   return (
     <>
       <Head>
-        <title>创建任务 - 牛逼的任务管理系统</title>
+        <title>创建任务 - 超级大牛逼的任务管理系统</title>
       </Head>
 
       <header className="header">
         <div className="container header-content">
-          <span className="logo">牛逼的任务管理系统</span>
+          <span className="logo">超级大牛逼的任务管理系统</span>
           <Link href="/" className="btn btn-secondary">返回列表</Link>
         </div>
       </header>
