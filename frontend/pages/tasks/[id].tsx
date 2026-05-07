@@ -75,10 +75,10 @@ export default function TaskDetail() {
   if (loading) {
     return (
       <>
-        <Head><title>加载中...</title></Head>
+        <Head><title>加载中... - 牛逼的任务管理系统</title></Head>
         <header className="header">
           <div className="container header-content">
-            <span className="logo">任务管理系统</span>
+            <span className="logo">牛逼的任务管理系统</span>
             <Link href="/" className="btn btn-secondary">返回列表</Link>
           </div>
         </header>
@@ -92,10 +92,10 @@ export default function TaskDetail() {
   if (notFound || !task) {
     return (
       <>
-        <Head><title>任务不存在</title></Head>
+        <Head><title>任务不存在 - 牛逼的任务管理系统</title></Head>
         <header className="header">
           <div className="container header-content">
-            <span className="logo">任务管理系统</span>
+            <span className="logo">牛逼的任务管理系统</span>
             <Link href="/" className="btn btn-secondary">返回列表</Link>
           </div>
         </header>
@@ -115,12 +115,12 @@ export default function TaskDetail() {
   return (
     <>
       <Head>
-        <title>{task.title} - 任务详情</title>
+        <title>牛逼的任务管理系统 - 任务详情</title>
       </Head>
 
       <header className="header">
         <div className="container header-content">
-          <span className="logo">任务管理系统</span>
+          <span className="logo">牛逼的任务管理系统</span>
           <Link href="/" className="btn btn-secondary">返回列表</Link>
         </div>
       </header>
