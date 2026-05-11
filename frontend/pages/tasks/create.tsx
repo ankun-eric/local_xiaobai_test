@@ -48,7 +48,7 @@ export default function CreateTask() {
   if (authLoading) {
     return (
       <>
-        <Head><title>加载中... - 牛逼哄哄的管理系统</title></Head>
+        <Head><title>加载中... - 我的小本本</title></Head>
         <main className="container"><div className="empty-state"><p>加载中...</p></div></main>
       </>
     );
@@ -109,12 +109,12 @@ export default function CreateTask() {
   return (
     <>
       <Head>
-        <title>创建任务 - 牛逼哄哄的管理系统</title>
+        <title>又来活儿了！ - 我的小本本</title>
       </Head>
 
       <header className="header">
         <div className="container header-content">
-          <span className="logo">牛逼哄哄的管理系统</span>
+          <span className="logo">我的小本本</span>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <Link href="/" className="btn btn-secondary">返回列表</Link>
             <button className="btn btn-secondary btn-sm" onClick={logout}>退出</button>

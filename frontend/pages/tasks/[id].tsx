@@ -30,7 +30,7 @@ export default function TaskDetail() {
   if (authLoading) {
     return (
       <>
-        <Head><title>加载中... - 牛逼哄哄的管理系统</title></Head>
+        <Head><title>加载中... - 我的小本本</title></Head>
         <main className="container"><div className="empty-state"><p>加载中...</p></div></main>
       </>
     );
@@ -87,10 +87,10 @@ export default function TaskDetail() {
   if (loading) {
     return (
       <>
-        <Head><title>加载中... - 牛逼哄哄的管理系统</title></Head>
+        <Head><title>加载中... - 我的小本本</title></Head>
         <header className="header">
           <div className="container header-content">
-            <span className="logo">牛逼哄哄的管理系统</span>
+            <span className="logo">我的小本本</span>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
               <Link href="/" className="btn btn-secondary">返回列表</Link>
               <button className="btn btn-secondary btn-sm" onClick={logout}>退出</button>
@@ -107,10 +107,10 @@ export default function TaskDetail() {
   if (notFound || !task) {
     return (
       <>
-        <Head><title>任务不存在 - 牛逼哄哄的管理系统</title></Head>
+        <Head><title>任务不存在 - 我的小本本</title></Head>
         <header className="header">
           <div className="container header-content">
-            <span className="logo">牛逼哄哄的管理系统</span>
+            <span className="logo">我的小本本</span>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
               <Link href="/" className="btn btn-secondary">返回列表</Link>
               <button className="btn btn-secondary btn-sm" onClick={logout}>退出</button>
@@ -133,12 +133,12 @@ export default function TaskDetail() {
   return (
     <>
       <Head>
-        <title>牛逼哄哄的管理系统 - 任务详情</title>
+        <title>瞅瞅这个任务 - 我的小本本</title>
       </Head>
 
       <header className="header">
         <div className="container header-content">
-          <span className="logo">牛逼哄哄的管理系统</span>
+          <span className="logo">我的小本本</span>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <Link href="/" className="btn btn-secondary">返回列表</Link>
             <button className="btn btn-secondary btn-sm" onClick={logout}>退出</button>

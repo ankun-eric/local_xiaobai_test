@@ -46,7 +46,7 @@ export default function Dashboard() {
   if (authLoading) {
     return (
       <>
-        <Head><title>加载中... - 牛逼哄哄的管理系统</title></Head>
+        <Head><title>加载中... - 我的小本本</title></Head>
         <main className="container"><div className="empty-state"><p>加载中...</p></div></main>
       </>
     );
@@ -97,12 +97,12 @@ export default function Dashboard() {
   return (
     <>
       <Head>
-        <title>牛逼哄哄的管理系统 - 仪表盘</title>
+        <title>今天干啥？ - 我的小本本</title>
       </Head>
 
       <header className="header">
         <div className="container header-content">
-          <span className="logo">牛逼哄哄的管理系统</span>
+          <span className="logo">我的小本本</span>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <span style={{ fontSize: 13, color: 'var(--text-muted)' }}>
               {user?.username}
