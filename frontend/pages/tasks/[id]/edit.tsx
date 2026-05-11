@@ -3,6 +3,7 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { taskApi, Task } from '@/lib/api';
+import { useAuth, useRequireAuth } from '@/lib/auth';
 import toast from 'react-hot-toast';
 
 const PRIORITY_OPTIONS = [
@@ -28,6 +29,8 @@ const CATEGORY_OPTIONS = [
 ];
 
 export default function EditTask() {
+  const { logout } = useAuth();
+  const { isLoading: authLoading } = useRequireAuth();
   const router = useRouter();
   const { id } = router.query;
   const [loading, setLoading] = useState(true);
@@ -44,6 +47,15 @@ export default function EditTask() {
     tags: '',
     progress: 0,
   });
+
+  if (authLoading) {
+    return (
+      <>
+        <Head><title>加载中... - 牛逼哄哄的管理系统</title></Head>
+        <main className="container"><div className="empty-state"><p>加载中...</p></div></main>
+      </>
+    );
+  }
 
   useEffect(() => {
     if (!id) return;
@@ -130,11 +142,14 @@ export default function EditTask() {
   if (loading) {
     return (
       <>
-        <Head><title>加载中... - 一点都很吹牛逼的管理系统</title></Head>
+        <Head><title>加载中... - 牛逼哄哄的管理系统</title></Head>
         <header className="header">
           <div className="container header-content">
-            <span className="logo">一点都很吹牛逼的管理系统</span>
-            <Link href="/" className="btn btn-secondary">返回列表</Link>
+            <span className="logo">牛逼哄哄的管理系统</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <Link href="/" className="btn btn-secondary">返回列表</Link>
+              <button className="btn btn-secondary btn-sm" onClick={logout}>退出</button>
+            </div>
           </div>
         </header>
         <main className="container"><div className="empty-state"><p>加载中...</p></div></main>
@@ -145,11 +160,14 @@ export default function EditTask() {
   if (notFound) {
     return (
       <>
-        <Head><title>任务不存在 - 一点都很吹牛逼的管理系统</title></Head>
+        <Head><title>任务不存在 - 牛逼哄哄的管理系统</title></Head>
         <header className="header">
           <div className="container header-content">
-            <span className="logo">一点都很吹牛逼的管理系统</span>
-            <Link href="/" className="btn btn-secondary">返回列表</Link>
+            <span className="logo">牛逼哄哄的管理系统</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <Link href="/" className="btn btn-secondary">返回列表</Link>
+              <button className="btn btn-secondary btn-sm" onClick={logout}>退出</button>
+            </div>
           </div>
         </header>
         <main className="container">
@@ -165,13 +183,16 @@ export default function EditTask() {
   return (
     <>
       <Head>
-        <title>编辑任务 - 一点都很吹牛逼的管理系统</title>
+        <title>编辑任务 - 牛逼哄哄的管理系统</title>
       </Head>
 
       <header className="header">
         <div className="container header-content">
-          <span className="logo">一点都很吹牛逼的管理系统</span>
-          <Link href="/" className="btn btn-secondary">返回列表</Link>
+          <span className="logo">牛逼哄哄的管理系统</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <Link href="/" className="btn btn-secondary">返回列表</Link>
+            <button className="btn btn-secondary btn-sm" onClick={logout}>退出</button>
+          </div>
         </div>
       </header>
 

@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { taskApi, Task, TaskStats } from '@/lib/api';
+import { useAuth, useRequireAuth } from '@/lib/auth';
 import toast from 'react-hot-toast';
 
 const PRIORITY_LABELS: Record<string, string> = {
@@ -27,6 +28,8 @@ const CATEGORY_LABELS: Record<string, string> = {
 };
 
 export default function Dashboard() {
+  const { user, logout } = useAuth();
+  const { isLoading: authLoading } = useRequireAuth();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [stats, setStats] = useState<TaskStats | null>(null);
   const [loading, setLoading] = useState(true);
@@ -39,6 +42,15 @@ export default function Dashboard() {
   const [sortOrder, setSortOrder] = useState('desc');
 
   const pageSize = 15;
+
+  if (authLoading) {
+    return (
+      <>
+        <Head><title>加载中... - 牛逼哄哄的管理系统</title></Head>
+        <main className="container"><div className="empty-state"><p>加载中...</p></div></main>
+      </>
+    );
+  }
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -85,15 +97,23 @@ export default function Dashboard() {
   return (
     <>
       <Head>
-        <title>一点都很吹牛逼的管理系统 - 仪表盘</title>
+        <title>牛逼哄哄的管理系统 - 仪表盘</title>
       </Head>
 
       <header className="header">
         <div className="container header-content">
-          <span className="logo">一点都很吹牛逼的管理系统</span>
-          <Link href="/tasks/create" className="btn btn-primary">
-            + 创建任务
-          </Link>
+          <span className="logo">牛逼哄哄的管理系统</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <span style={{ fontSize: 13, color: 'var(--text-muted)' }}>
+              {user?.username}
+            </span>
+            <Link href="/tasks/create" className="btn btn-primary">
+              + 创建任务
+            </Link>
+            <button className="btn btn-secondary btn-sm" onClick={logout}>
+              退出登录
+            </button>
+          </div>
         </div>
       </header>
 
