@@ -3,7 +3,7 @@
 > **项目名称**：个人任务管理系统（一点都很吹牛逼的管理系统）
 > **DEPLOY_ID**：a46094c5-4cff-434b-a815-3e73fc6d39a6
 > **技术栈**：FastAPI + Next.js + MySQL + Docker Compose + Nginx
-> **索引最新更新时间**：2026-05-11 10:30:00
+> **索引最新更新时间**：2026-05-11 15:40:00
 
 ---
 
@@ -41,12 +41,14 @@ noob_test/
 │   ├── Dockerfile                   # 前端 Docker 构建文件
 │   ├── next.config.js               # Next.js 配置（basePath: /autodev/a46094c5-4cff-434b-a815-3e73fc6d39a6）
 │   ├── lib/
-│   │   └── api.ts                   # Axios API 客户端 + TypeScript 类型定义
+│   │   ├── api.ts                   # Axios API 客户端 + TypeScript 类型定义
+│   │   └── auth.tsx                 # 认证上下文 + useAuth Hook
 │   ├── styles/
 │   │   └── globals.css              # 全局样式（暗色主题 UI）
 │   └── pages/
-│       ├── _app.tsx                 # App 入口（Toaster 集成）
+│       ├── _app.tsx                 # App 入口（AuthProvider + Toaster 集成）
 │       ├── index.tsx                # 仪表盘页面（任务列表 + 统计 + 筛选）
+│       ├── login.tsx                # 登录页面（用户名+密码认证）
 │       └── tasks/
 │           ├── create.tsx           # 创建任务页面
 │           ├── [id].tsx             # 任务详情页面
@@ -162,6 +164,7 @@ noob_test/
 
 | 路由 | 文件 | 组件名 | 说明 |
 |------|------|--------|------|
+| `/login` | `pages/login.tsx` | LoginPage | 登录页面（用户名+密码认证） |
 | `/` | `pages/index.tsx` | Dashboard | 仪表盘：统计卡片 + 任务表格 + 筛选栏 + 分页 |
 | `/tasks/create` | `pages/tasks/create.tsx` | CreateTask | 创建任务表单 |
 | `/tasks/[id]` | `pages/tasks/[id].tsx` | TaskDetail | 任务详情（含剩余天数计算） |
@@ -169,8 +172,9 @@ noob_test/
 
 ### 共享组件
 
-- `_app.tsx`：全局 Toaster 通知组件
+- `_app.tsx`：全局 AuthProvider + Toaster 通知组件
 - `globals.css`：全局样式系统（CSS 变量 + 响应式布局）
+- `auth.tsx`：认证上下文（AuthProvider + useAuth + useRequireAuth Hook），提供登录/登出/路由保护功能
 
 ### API 客户端（`frontend/lib/api.ts`）
 
@@ -235,11 +239,13 @@ noob_test/
 | `backend/tests/test_api.py` | 自动化测试 | 完整 API 测试用例 |
 | `backend/requirements.txt` | 依赖清单 | fastapi, uvicorn, sqlalchemy, pymysql 等 |
 | `backend/Dockerfile` | 构建配置 | Python 3.11 镜像构建 |
+| `frontend/pages/login.tsx` | 登录页面 | 用户名+密码登录表单，默认 admin/admin123 |
 | `frontend/pages/index.tsx` | 主页面 | 仪表盘：任务列表 + 统计 + 筛选 |
 | `frontend/pages/tasks/create.tsx` | 创建页面 | 任务创建表单 |
 | `frontend/pages/tasks/[id].tsx` | 详情页面 | 任务详情 + 剩余天数 |
 | `frontend/pages/tasks/[id]/edit.tsx` | 编辑页面 | 任务编辑表单 |
 | `frontend/lib/api.ts` | API 客户端 | Axios 封装 + 类型定义 |
+| `frontend/lib/auth.tsx` | 认证模块 | AuthProvider + useAuth + useRequireAuth |
 | `frontend/next.config.js` | 前端配置 | basePath, assetPrefix 等 |
 | `frontend/styles/globals.css` | 全局样式 | 暗色主题 UI 系统 |
 | `frontend/Dockerfile` | 构建配置 | Node 18 镜像构建 + 静态导出 |
