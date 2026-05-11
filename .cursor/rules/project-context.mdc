@@ -3,7 +3,7 @@ description: 本仓库（noob_test）的目录与关键文件索引，供 Agent 
 alwaysApply: false
 ---
 
-# 项目上下文：一点都很吹牛逼的管理系统
+# 项目上下文：我的小本本（任务管理系统）
 
 基于 Next.js + FastAPI + MySQL 的个人任务管理系统，支持任务的增删改查、筛选排序和分类管理。
 
@@ -14,12 +14,15 @@ noob_test/
 ├── frontend/                    # Web 前端 - Next.js Pages Router + TypeScript
 │   ├── pages/                   # 页面路由
 │   │   ├── index.tsx            # 仪表盘主页 - 任务列表与统计
+│   │   ├── login.tsx            # 登录页
 │   │   ├── tasks/               # 任务相关页面
 │   │   │   ├── create.tsx        # 创建任务页
 │   │   │   ├── [id].tsx          # 任务详情页
 │   │   │   └── [id]/edit.tsx     # 编辑任务页
 │   │   └── _app.tsx              # App 入口组件
-│   ├── lib/api.ts               # API 客户端封装 (axios)
+│   ├── lib/                     # 工具库
+│   │   ├── api.ts               # API 客户端封装 (axios)
+│   │   └── auth.tsx             # 认证上下文与 Hook
 │   ├── styles/globals.css       # 全局样式
 │   ├── next.config.js           # Next.js 配置 (basePath, assetPrefix)
 │   ├── Dockerfile               # 前端 Docker 镜像
@@ -34,6 +37,8 @@ noob_test/
 │   ├── tests/test_api.py        # API 自动化测试
 │   ├── Dockerfile               # 后端 Docker 镜像
 │   └── requirements.txt         # Python 依赖
+├── .chat_output/                # AI 输出产物目录（PRD、图片等）
+├── mem/                         # 历史对话记忆库
 ├── docker-compose.yml           # Docker Compose 开发配置
 ├── docker-compose.prod.yml      # Docker Compose 生产配置（expose, healthcheck）
 ├── gateway-routes.conf          # Gateway Nginx 路由配置片段（Docker DNS）
@@ -44,7 +49,8 @@ noob_test/
 │   └── deploy_msg.txt           # 服务器连接信息
 └── user_docs/                   # 用户手册文档
     ├── Gateway路由修复.md        # Gateway 路由修复使用手册（2026-05-11）
-    └── manual_20260507_185422_2001.md  # 页面标题更新使用手册
+    ├── manual_20260507_185422_2001.md  # 页面标题更新使用手册
+    └── 页面标题文案优化.md        # 页面标题文案优化使用手册（2026-05-11）
 ```
 
 ## 子系统说明
@@ -92,6 +98,7 @@ noob_test/
 | 页面路由 | 文件 | 说明 |
 |----------|------|------|
 | / | frontend/pages/index.tsx | 仪表盘 - 统计卡片、筛选栏、任务表格 |
+| /login | frontend/pages/login.tsx | 用户登录页 |
 | /tasks/create | frontend/pages/tasks/create.tsx | 创建新任务表单 |
 | /tasks/[id] | frontend/pages/tasks/[id].tsx | 任务详情查看 |
 | /tasks/[id]/edit | frontend/pages/tasks/[id]/edit.tsx | 编辑任务表单 |
@@ -111,7 +118,9 @@ noob_test/
 | 文件 | 用途 |
 |------|------|
 | frontend/pages/index.tsx | 仪表盘主页面 |
+| frontend/pages/login.tsx | 用户登录页 |
 | frontend/lib/api.ts | 前端 API 调用封装 |
+| frontend/lib/auth.tsx | 认证上下文与 useAuth / useRequireAuth Hook |
 | frontend/next.config.js | Next.js 构建配置 |
 | backend/app/main.py | FastAPI 应用入口与路由注册 |
 | backend/app/models.py | 数据库 ORM 模型定义 |
@@ -123,3 +132,10 @@ noob_test/
 | nginx-gateway.conf | Gateway Nginx 路由规则（本地开发） |
 | .env.production | 生产环境变量配置 |
 | user_docs/Gateway路由修复.md | Gateway 路由修复使用手册 |
+
+## 历史记忆库（mem/）
+
+| 记忆文件 | 主题 | 日期 | 摘要 |
+|----------|------|------|------|
+| mem_浏览器标题修改需求_20260511_1810.md | 首页浏览器标签页标题修改 | 2026-05-11 | 将首页标题从"牛逼哄哄的管理系统"改为"你二大爷的系统"，仅改首页2处&lt;title&gt;，其他页面/UI文字/API均不动 |
+| user_docs/页面标题文案优化.md | 全局页面标题文案优化 | 2026-05-11 | 系统名称由「牛逼哄哄的管理系统」改为「我的小本本」，4个页面标题改为口语化风格 |
