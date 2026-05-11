@@ -1,0 +1,253 @@
+# 项目索引
+
+> **项目名称**：个人任务管理系统（一点都很吹牛逼的管理系统）
+> **DEPLOY_ID**：a46094c5-4cff-434b-a815-3e73fc6d39a6
+> **技术栈**：FastAPI + Next.js + MySQL + Docker Compose + Nginx
+> **索引最新更新时间**：2026-05-11 10:30:00
+
+---
+
+## 目录结构
+
+```
+noob_test/
+├── .env.production                  # 生产环境变量
+├── docker-compose.prod.yml          # Docker Compose 生产编排
+├── nginx-gateway.conf               # Gateway Nginx 配置（本地开发用）
+├── gateway-routes.conf              # Gateway 路由配置（远程部署用）
+├── 备注.txt                         # 项目说明：本项目专门用于本地各种测试
+├── deploy_executor.py               # 远程部署执行器（11步自动部署到 1Panel 服务器）
+├── fix_and_restart.py               # 路由修复脚本（SSH 远程执行）
+├── fix_gateway_on_server.sh          # Gateway 路由修复脚本（服务器端手动执行）
+│
+├── backend/                         # FastAPI 后端
+│   ├── .env                         # 后端本地环境变量
+│   ├── Dockerfile                   # 后端 Docker 构建文件
+│   ├── pytest.ini                   # Pytest 配置
+│   ├── requirements.txt             # Python 依赖
+│   ├── app/
+│   │   ├── __init__.py
+│   │   ├── main.py                  # FastAPI 应用入口 + 路由注册
+│   │   ├── database.py              # MySQL 连接 + 会话管理
+│   │   ├── models.py                # SQLAlchemy 数据模型
+│   │   ├── schemas.py               # Pydantic 请求/响应 Schema
+│   │   └── routers/
+│   │       ├── __init__.py
+│   │       └── tasks.py             # 任务 CRUD API 路由
+│   └── tests/
+│       └── test_api.py              # API 自动化测试
+│
+├── frontend/                        # Next.js 前端
+│   ├── Dockerfile                   # 前端 Docker 构建文件
+│   ├── next.config.js               # Next.js 配置（basePath: /autodev/a46094c5-4cff-434b-a815-3e73fc6d39a6）
+│   ├── lib/
+│   │   └── api.ts                   # Axios API 客户端 + TypeScript 类型定义
+│   ├── styles/
+│   │   └── globals.css              # 全局样式（暗色主题 UI）
+│   └── pages/
+│       ├── _app.tsx                 # App 入口（Toaster 集成）
+│       ├── index.tsx                # 仪表盘页面（任务列表 + 统计 + 筛选）
+│       └── tasks/
+│           ├── create.tsx           # 创建任务页面
+│           ├── [id].tsx             # 任务详情页面
+│           └── [id]/
+│               └── edit.tsx         # 编辑任务页面
+│
+├── deploy/                          # 部署说明文档
+│   ├── deploy_msg.txt
+│   ├── git_msg.txt
+│   └── production_msg.txt
+│
+└── user_docs/                       # 用户文档
+    ├── manual_20260507_185422_2001.md
+    ├── 页面标题更新.md
+    ├── 页面标题更新为超级大牛逼.md
+    ├── 个人任务管理系统.md
+    └── Gateway路由修复.md            # Gateway 路由修复使用手册（修复无斜杠 URL 显示 Gateway OK 问题）
+```
+
+---
+
+## 子系统说明
+
+### 1. Backend（FastAPI 后端服务）
+
+- **职责**：提供任务管理 RESTful API，连接 MySQL 数据库
+- **入口**：`backend/app/main.py` → uvicorn 启动，端口 8000
+- **数据库**：MySQL 8.0，使用 SQLAlchemy ORM
+- **认证**：目前无认证（CORS 开放全部来源）
+- **依赖注入**：使用 FastAPI Depends + SQLAlchemy Session
+- **部署**：Dockerfile 基于 python:3.11-slim，pip 安装依赖
+- **测试**：pytest + TestClient，覆盖所有 CRUD 端点 + 边界条件
+
+### 2. Frontend（Next.js 前端）
+
+- **职责**：任务管理仪表盘 UI，支持创建/查看/编辑/删除任务
+- **框架**：Next.js Pages Router（SSG 静态导出模式）
+- **样式**：暗色主题 CSS（渐变背景 + 毛玻璃效果卡片）
+- **API 通信**：Axios 客户端，baseURL = `/autodev/a46094c5-4cff-434b-a815-3e73fc6d39a6/api`
+- **basePath**：`/autodev/a46094c5-4cff-434b-a815-3e73fc6d39a6`（与 Gateway Nginx 反向代理路径一致）
+- **部署**：Dockerfile 基于 node:18-alpine，`npm run build` + `npm start`
+
+### 3. Deploy（部署系统）
+
+- **deploy_executor.py**：11 步自动部署脚本，通过 SSH 将代码部署到 1Panel 服务器
+  - 步骤：SSH验证 → 数据库备份 → Git clone/pull → 传输配置 → 迁移审查 → 环境变量 → 构建启动 → 健康检查 → Gateway网络 → Gateway配置 → 最终确认
+- **fix_and_restart.py**：快速路由修复脚本，处理 Gateway nginx 配置问题
+- **fix_gateway_on_server.sh**：Gateway 路由修复脚本（服务器端手动执行），自动拉取代码并更新 Gateway Nginx 配置
+
+### 4. Gateway（Nginx 网关）
+
+- **本地开发**：`nginx-gateway.conf` — 直接 proxy_pass 到 localhost:8000/3000
+- **远程部署**：`gateway-routes.conf` — 通过 Docker 网络容器名解析
+
+---
+
+## 数据模型
+
+### tasks 表（MySQL）
+
+| 字段 | 类型 | 约束 | 说明 |
+|------|------|------|------|
+| id | Integer | PK, 自增 | 任务 ID |
+| title | String(255) | NOT NULL | 任务标题 |
+| description | Text | NULL | 任务描述 |
+| priority | String(20) | 默认 "medium" | 优先级: critical/high/medium/low |
+| status | String(20) | 默认 "todo" | 状态: todo/in_progress/review/done |
+| category | String(50) | 默认 "personal" | 分类: work/personal/study/health/finance |
+| due_date | DateTime | NULL | 截止日期 |
+| estimated_hours | Float | NULL | 预计耗时(小时) |
+| tags | JSON | NULL | 标签列表 |
+| progress | Integer | 默认 0 | 进度 0-100 |
+| created_at | DateTime | 默认 utcnow | 创建时间 |
+| updated_at | DateTime | 默认 utcnow, onupdate | 更新时间 |
+
+### Pydantic Schema
+
+| Schema | 用途 | 关键字段 |
+|--------|------|----------|
+| TaskCreate | 创建任务请求 | title (必填), 其他可选 |
+| TaskUpdate | 更新任务请求 | 全部可选 |
+| TaskResponse | 单个任务响应 | id + 全部字段 |
+| TaskStats | 统计响应 | total, todo, in_progress, review, done, overdue |
+| TaskListResponse | 列表响应 | tasks[], total, page, page_size |
+
+---
+
+## API 路由
+
+### 已注册路由
+
+**主应用**（`backend/app/main.py`）：
+| 方法 | 路径 | 说明 | 认证 |
+|------|------|------|------|
+| GET | `/api/health` | 健康检查 | 无 |
+| — | `/api/tasks/*` | 任务路由（include_router） | 无 |
+
+**任务路由**（`backend/app/routers/tasks.py`，前缀 `/api/tasks`）：
+| 方法 | 路径 | 说明 | 查询参数/请求体 |
+|------|------|------|------|
+| GET | `/api/tasks/stats` | 获取任务统计 | — |
+| GET | `/api/tasks` | 获取任务列表（分页+筛选） | page, page_size, status, priority, category, search, sort_by, sort_order |
+| GET | `/api/tasks/{task_id}` | 获取单个任务 | — |
+| POST | `/api/tasks` | 创建任务 (201) | TaskCreate body |
+| PUT | `/api/tasks/{task_id}` | 更新任务 | TaskUpdate body |
+| DELETE | `/api/tasks/{task_id}` | 删除任务 (204) | — |
+
+---
+
+## 前端页面与组件
+
+### 页面路由（Next.js Pages Router，basePath: `/autodev/a46094c5-4cff-434b-a815-3e73fc6d39a6`）
+
+| 路由 | 文件 | 组件名 | 说明 |
+|------|------|--------|------|
+| `/` | `pages/index.tsx` | Dashboard | 仪表盘：统计卡片 + 任务表格 + 筛选栏 + 分页 |
+| `/tasks/create` | `pages/tasks/create.tsx` | CreateTask | 创建任务表单 |
+| `/tasks/[id]` | `pages/tasks/[id].tsx` | TaskDetail | 任务详情（含剩余天数计算） |
+| `/tasks/[id]/edit` | `pages/tasks/[id]/edit.tsx` | EditTask | 编辑任务表单（预填数据） |
+
+### 共享组件
+
+- `_app.tsx`：全局 Toaster 通知组件
+- `globals.css`：全局样式系统（CSS 变量 + 响应式布局）
+
+### API 客户端（`frontend/lib/api.ts`）
+
+| 方法 | 说明 |
+|------|------|
+| `taskApi.getStats()` | 获取任务统计 |
+| `taskApi.getTasks(params)` | 获取任务列表（带筛选参数） |
+| `taskApi.getTask(id)` | 获取单个任务 |
+| `taskApi.createTask(data)` | 创建任务 |
+| `taskApi.updateTask(id, data)` | 更新任务 |
+| `taskApi.deleteTask(id)` | 删除任务 |
+
+---
+
+## 配置信息
+
+### 环境变量
+
+| 变量 | 默认值 | 说明 |
+|------|--------|------|
+| MYSQL_HOST | mysql / a46094c5-...-mysql | MySQL 主机 |
+| MYSQL_PORT | 3306 | MySQL 端口 |
+| MYSQL_USER | taskuser | 数据库用户 |
+| MYSQL_PASSWORD | taskpass123 | 数据库密码 |
+| MYSQL_DATABASE | taskdb | 数据库名 |
+
+### 环境配置文件
+
+| 文件 | 用途 |
+|------|------|
+| `.env.production` | 生产环境变量（含完整 MySQL 配置） |
+| `backend/.env` | 后端本地开发环境变量 |
+
+### Next.js 配置（`frontend/next.config.js`）
+
+| 配置项 | 值 |
+|--------|-----|
+| reactStrictMode | true |
+| basePath | `/autodev/a46094c5-4cff-434b-a815-3e73fc6d39a6` |
+| assetPrefix | `/autodev/a46094c5-4cff-434b-a815-3e73fc6d39a6` |
+| trailingSlash | false |
+
+### Docker Compose 服务编排（`docker-compose.prod.yml`）
+
+| 服务 | 镜像/构建 | 端口 | 依赖 | 健康检查 |
+|------|-----------|------|------|----------|
+| mysql | mysql:8.0 | 3306(expose) | — | mysqladmin ping |
+| backend | ./backend (Dockerfile) | 8000(expose) | mysql | GET /api/health |
+| frontend | ./frontend (Dockerfile) | 3000(expose) | backend | GET /autodev/a46094c5-4cff-434b-a815-3e73fc6d39a6 |
+
+---
+
+## 关键文件索引
+
+| 文件路径 | 角色 | 说明 |
+|----------|------|------|
+| `backend/app/main.py` | 后端入口 | FastAPI 应用初始化、中间件、路由注册 |
+| `backend/app/models.py` | 数据模型 | Task SQLAlchemy 模型定义 |
+| `backend/app/schemas.py` | 数据校验 | Pydantic 请求/响应 Schema |
+| `backend/app/database.py` | 数据库层 | MySQL 连接、Session 工厂、依赖注入 |
+| `backend/app/routers/tasks.py` | API 路由 | 任务 CRUD + 统计全部端点实现 |
+| `backend/tests/test_api.py` | 自动化测试 | 完整 API 测试用例 |
+| `backend/requirements.txt` | 依赖清单 | fastapi, uvicorn, sqlalchemy, pymysql 等 |
+| `backend/Dockerfile` | 构建配置 | Python 3.11 镜像构建 |
+| `frontend/pages/index.tsx` | 主页面 | 仪表盘：任务列表 + 统计 + 筛选 |
+| `frontend/pages/tasks/create.tsx` | 创建页面 | 任务创建表单 |
+| `frontend/pages/tasks/[id].tsx` | 详情页面 | 任务详情 + 剩余天数 |
+| `frontend/pages/tasks/[id]/edit.tsx` | 编辑页面 | 任务编辑表单 |
+| `frontend/lib/api.ts` | API 客户端 | Axios 封装 + 类型定义 |
+| `frontend/next.config.js` | 前端配置 | basePath, assetPrefix 等 |
+| `frontend/styles/globals.css` | 全局样式 | 暗色主题 UI 系统 |
+| `frontend/Dockerfile` | 构建配置 | Node 18 镜像构建 + 静态导出 |
+| `docker-compose.prod.yml` | 编排文件 | 三服务编排（mysql + backend + frontend） |
+| `.env.production` | 环境变量 | 生产环境数据库连接配置 |
+| `nginx-gateway.conf` | 网关配置 | 本地开发 Nginx 反向代理 |
+| `gateway-routes.conf` | 网关配置 | 远程部署 Nginx 路由（Docker 网络） |
+| `deploy_executor.py` | 部署脚本 | 11 步全自动 SSH 部署 |
+| `fix_and_restart.py` | 修复脚本 | SSH 远程路由修复 |
+| `fix_gateway_on_server.sh` | 修复脚本 | Gateway 路由修复（服务器端手动执行） |
+| `user_docs/Gateway路由修复.md` | 用户文档 | Gateway 路由修复使用手册 |
